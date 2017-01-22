@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="400"
+   height="400"
+   viewBox="0 0 399.99998 399.99998"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="eyecircle.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="580.94602"
+     inkscape:cy="-175.87106"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1436"
+     inkscape:window-height="856"
+     inkscape:window-x="4"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-652.36216)">
+    <ellipse
+       style="fill:#ff00ff"
+       id="path3336"
+       cx="45.714287"
+       cy="832.36218"
+       rx="42.857143"
+       ry="34.285713" />
+    <circle
+       style="fill:#ff00ff"
+       id="path3338"
+       cx="199.99997"
+       cy="852.36218"
+       r="199.99997" />
+    <path
+       style="fill:#05ff1d;fill-opacity:1"
+       d="M 163.85714,395.39294 C 93.413891,381.63066 38.450849,334.89874 13.26357,267.35186 1.7971666,236.60143 -1.0108829,189.45287 6.5894869,155.29066 26.549157,65.57576 106.37557,2.2857143 199.57143,2.2857143 c 54.67838,0 102.142,19.3741537 139.85666,57.0880257 24.17342,24.172951 37.30931,44.54473 47.36211,73.45152 18.93226,54.43971 15.57094,104.58587 -10.59291,158.03188 -15.36186,31.38026 -50.58649,67.67543 -80.91158,83.37063 -41.87274,21.67183 -89.5419,29.34846 -131.42857,21.16517 z"
+       id="path3340"
+       inkscape:connector-curvature="0"
+       transform="translate(0,652.36216)" />
+    <circle
+       style="fill:#e3dbdb;fill-opacity:1"
+       id="path4142"
+       cx="349.99997"
+       cy="852.36212"
+       r="49.999992" />
+    <circle
+       style="fill:#000000;fill-opacity:1"
+       id="path4144"
+       cx="349.99997"
+       cy="852.36212"
+       r="29.999996" />
+  </g>
+</svg>
