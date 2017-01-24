@@ -14,6 +14,7 @@ public class GC : MonoBehaviour {
 		public float numRockMonsters;
 	}
 
+	public bool canPlaceTower;
 	public float timeBetweenWaves;
 	public bool gameStart;
 	public int currentWave = 0;
@@ -94,7 +95,7 @@ public class GC : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if(gameStart) {
+		if(!gameStart) {
 			createTowers ();
 			waveManager();
 		}
@@ -104,14 +105,61 @@ public class GC : MonoBehaviour {
 		Instantiate (goblin);
 	}
 
+	void OnMouseEnter() {
+		canPlaceTower = true;
+		Debug.Log("mouse");
+	}
+
+	void OnMouseExit() {
+		canPlaceTower = false;
+		Debug.Log("mouse");
+	}
+
 	void createTowers() {
 		if(Input.GetButtonDown("Fire1")) {
+			// Physics.Raycast(transform.position, , )
 //			Vector3 towerPosition = Input.mousePosition;
 //			towerPosition.z = 0;
 //			Camera.main.ScreenToWorldPoint (towerPosition);
-			Vector3 position = Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 0));
-			position.z = 0;
-			Instantiate (cannonTower, position, Quaternion.identity);
+//			Ray ray = Camera.main.ScreenPointToRay (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 0));
+//			RaycastHit hit;
+//			if(Physics.Raycast(ray, out hit, 1000f)) {
+//				if(hit.collider.gameObject.name == "Path Collision") {
+//					Debug.Log ("Hit: " + hit.transform.position);
+////					position.z = 0;
+//					Instantiate (cannonTower, hit.transform.position, Quaternion.identity);			
+//				} 
+//			}
+
+			RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+//			Debug.Log (Camera.main.ScreenToWorldPoint (Input.mousePosition));
+			foreach(RaycastHit2D hit in hits) {
+				if(!(hit.collider.gameObject.name == "Path Collision")) {
+					if (!Physics2D.Raycast (Camera.main.ScreenPointToRay (Input.mousePosition), hit)) {
+						
+					} else {
+						Debug.Log ("d");
+						Vector3 mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+						Instantiate (cannonTower, new Vector3 (mousePos.x, mousePos.y, 0), Quaternion.identity);
+					}
+				} 
+				if(hit == null) {
+					
+				}
+			}
+				
+			// if (Physics.Raycast (ray, out hit)) {
+			// 	Debug.Log ("dkfd");
+			// 	if(hit.collider.gameObject.name == "Path Collision") {
+			// 		Debug.Log ("Hit: " + hit.transform.position);
+			// 		Instantiate (cannonTower, hit.transform.position, Quaternion.identity);			
+			// 	}
+			// }
+
+
 		}
+
 	}
+
+		
 }
