@@ -14,6 +14,9 @@ public class GC : MonoBehaviour {
 		public float numRockMonsters;
 	}
 
+	public float money;
+	public float cannonTowerCost;
+
 	public bool canPlaceTower;
 	public float timeBetweenWaves;
 	public bool gameStart;
@@ -105,16 +108,6 @@ public class GC : MonoBehaviour {
 		Instantiate (goblin);
 	}
 
-	void OnMouseEnter() {
-		canPlaceTower = true;
-		Debug.Log("mouse");
-	}
-
-	void OnMouseExit() {
-		canPlaceTower = false;
-		Debug.Log("mouse");
-	}
-
 	void createTowers() {
 		if(Input.GetButtonDown("Fire1")) {
 			// Physics.Raycast(transform.position, , )
@@ -134,17 +127,9 @@ public class GC : MonoBehaviour {
 			RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 //			Debug.Log (Camera.main.ScreenToWorldPoint (Input.mousePosition));
 			foreach(RaycastHit2D hit in hits) {
-				if(!(hit.collider.gameObject.name == "Path Collision")) {
-					if (!Physics2D.Raycast (Camera.main.ScreenPointToRay (Input.mousePosition), hit)) {
-						
-					} else {
-						Debug.Log ("d");
-						Vector3 mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-						Instantiate (cannonTower, new Vector3 (mousePos.x, mousePos.y, 0), Quaternion.identity);
-					}
-				} 
-				if(hit == null) {
-					
+				if((hit.collider.gameObject.name == "Land Collision")) {
+					Vector3 mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+					Instantiate (cannonTower, new Vector3 (mousePos.x, mousePos.y, 0), Quaternion.identity);
 				}
 			}
 				
