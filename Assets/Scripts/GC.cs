@@ -130,7 +130,9 @@ public class GC : MonoBehaviour {
 				if((hit.collider.gameObject.name == "Land Collision")) {
 					Vector3 mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 					Vector3 smoothPoint = grid.remapPoint (mousePos);
-					Instantiate (cannonTower, new Vector3 (smoothPoint.x, smoothPoint.y, 0), Quaternion.identity);
+					if (grid.placeTower (smoothPoint)) {
+						Instantiate (cannonTower, new Vector3 (smoothPoint.x, smoothPoint.y, 0), Quaternion.identity);
+					}
 				}
 			}
 				

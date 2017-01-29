@@ -11,6 +11,8 @@ public class Grid : MonoBehaviour {
 	public int width;
 	public int height;
 
+	private bool[] towerSpaces = new bool[144];
+
 	// Use this for initialization
 	void Start () {
 		
@@ -41,14 +43,19 @@ public class Grid : MonoBehaviour {
 		return  maxY - (cellHeight / 2);
 	}
 
-	public Vector3 remapPoint(Vector3 input) {
-		Vector2 index = new Vector2 ();
+	Vector3 computeIndex(Vector3 input) {
+		Vector3 index = new Vector2 ();
 		index.x = (input.x - getFirstHorizontal ()) / (getLastHorizontal () - getFirstHorizontal ());
 		index.y = (input.y - getFirstVertical ()) / (getLastVertical () - getFirstVertical ()); 
 		index.x *= width - 1;
 		index.y *= height - 1;
 		index.x = (int) (index.x + .5f);
 		index.y = (int) (index.y + .5f);
+		return index;
+	}
+
+	public Vector3 remapPoint(Vector3 input) {
+		Vector3 index = computeIndex (input);
 		index.x /= width - 1;
 		index.y /= height - 1;
 		Vector3 output = new Vector3 ();
@@ -57,5 +64,19 @@ public class Grid : MonoBehaviour {
 		output.z = -3;
 		return output;
 	}
-	
+
+	int getIndex(int x, int y) {
+		return x + (width * y);
+	}
+
+	public bool placeTower(Vector3 position) {
+		Vector3 posIndex = computeIndex (position);
+		int index = getIndex ((int)posIndex.x, (int)posIndex.y);
+		bool isTowerThere = towerSpaces[index];
+		if(isTowerThere) {
+			return false;
+		}
+		towerSpaces [index] = true;
+		return true;
+	}
 }
