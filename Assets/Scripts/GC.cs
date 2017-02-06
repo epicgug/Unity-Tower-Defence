@@ -14,6 +14,8 @@ public class GC : MonoBehaviour {
 		public float numRockMonsters;
 	}
 
+	public static GC local;
+
 	public float money;
 	public float cannonTowerCost;
 
@@ -31,6 +33,24 @@ public class GC : MonoBehaviour {
 	private float goblinLastSpawnTime;
 	private float rockMonsterLastSpawnTime;
 	private float lastSpawnTime;
+
+	private ISelectable selected;
+
+
+	public ISelectable Selected {
+		get {
+			return this.selected;
+		}
+
+		set {
+			if(this.selected != null) {
+				this.selected.Deselect ();
+			}
+			this.selected = value;
+			Debug.Log (this.selected);
+			this.selected.Select ();
+		}
+	}
 
 	// Use this for initialization
 
@@ -74,7 +94,7 @@ public class GC : MonoBehaviour {
 				// StartCoroutine(waitForXSeconds(timeBetweenWaves));
   			}
 		} else {
-
+			//TODO: End game
 		}
 	}
 
@@ -82,7 +102,7 @@ public class GC : MonoBehaviour {
 		return rockMonstersSpawned + goblinsSpawned;
 	}
 
-	IEnumerator waitForXSeconds(float seconds) {
+	IEnumerator waitForXSeconds(float seconds) {	
 		yield return new WaitForSeconds(seconds);
 	}
 
@@ -91,6 +111,7 @@ public class GC : MonoBehaviour {
 	}
 
 	void Start () {
+		GC.local = this;
 		lastSpawnTime = Time.time;
 		goblinLastSpawnTime = Time.time;
 		rockMonsterLastSpawnTime = Time.time;
@@ -119,11 +140,11 @@ public class GC : MonoBehaviour {
 //			if(Physics.Raycast(ray, out hit, 1000f)) {
 //				if(hit.collider.gameObject.name == "Path Collision") {
 //					Debug.Log ("Hit: " + hit.transform.position);
-////					position.z = 0;
+//					position.z = 0;
 //					Instantiate (cannonTower, hit.transform.position, Quaternion.identity);			
 //				} 
 //			}
-			Grid grid = GameObject.Find ("Grid").GetComponent<Grid> ();;
+			Grid grid = GameObject.Find ("Grid").GetComponent<Grid> ();
 			RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 //			Debug.Log (Camera.main.ScreenToWorldPoint (Input.mousePosition));
 			foreach(RaycastHit2D hit in hits) {
@@ -135,7 +156,7 @@ public class GC : MonoBehaviour {
 					}
 				}
 			}
-				
+
 			// if (Physics.Raycast (ray, out hit)) {
 			// 	Debug.Log ("dkfd");
 			// 	if(hit.collider.gameObject.name == "Path Collision") {

@@ -91,6 +91,34 @@ NavMeshSettings:
     cellSize: 0.16666667
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &3106197
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 3106198}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3106198
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 3106197}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.76673126, y: 0.7452822, z: -7.860531}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &66943823
 GameObject:
   m_ObjectHideFlags: 0
@@ -1123,7 +1151,7 @@ MonoBehaviour:
     numGoblins: 500
     numRockMonsters: 1
   goblin: {fileID: 1000013981073168, guid: ccd21a9b3cdee4cb89f6c7ee70a95d9c, type: 2}
-  cannonTower: {fileID: 1000013331426974, guid: f5da9b1045d264c42bc46c7627b84bab,
+  cannonTower: {fileID: 1879366764817314, guid: f5da9b1045d264c42bc46c7627b84bab,
     type: 2}
 --- !u!1 &1529453898
 GameObject:

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class Tower : MonoBehaviour {
+public class Tower : MonoBehaviour, ISelectable {
 	public float shootRate;
 	public float radius;
 	public float damage;
@@ -12,6 +12,8 @@ public class Tower : MonoBehaviour {
 	public GameObject cannonProjectile;
 	public CircleCollider2D radiusCollider;
 	public LineRenderer line;
+	public SpriteRenderer spriteRenderer;
+
 
 	private List<Enemy> currentCollisions = new List<Enemy>();
 	private float timer;
@@ -19,12 +21,14 @@ public class Tower : MonoBehaviour {
 	public Enemy enemy;
 	// Use this for initialization
 	void Start () {
+
 		radiusCollider.radius = radius;
 		// Debug.Log(AssetDatabase.GetAssetPath);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		checkForSelection ();
 		timer += Time.deltaTime;
 
 		if(enemy != null) {
@@ -46,11 +50,33 @@ public class Tower : MonoBehaviour {
 		checkShoot ();
 	}
 
-	void OnCollisionEnter2D(Collision2D col) {
-//		Debug.Log ("enter");
-		currentCollisions.Add (col.gameObject.GetComponent<Enemy>());
+	void checkForSelection() {
+		if(Input.GetMouseButtonDown(0)) {
+			RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+			foreach (RaycastHit2D hit in hits) {
+				if(hit.collider.gameObject.tag == "Tower") {
+					Debug.Log ("mousebutton");
+					GC.local.Selected = hit.collider.gameObject.GetComponent<Tower> ();
+				}
+			}
+		}
 	}
 
+
+	public void Select() {
+		spriteRenderer.color = Color.red;
+		Debug.Log ("select");
+	}
+
+	public void Deselect() {
+		spriteRenderer.color = Color.white;
+	}
+
+//	void OnCollisionEnter2D(Collision2D col) {
+//		Debug.Log ("enter");
+//		currentCollisions.Add (col.gameObject.GetComponent<Enemy>());
+//	}
+//
 	void OnTriggerEnter2D(Collider2D col) {
 		//Debug.Log ("entered");
 		currentCollisions.Add (col.gameObject.GetComponent<Enemy>());
@@ -112,7 +138,7 @@ public class Tower : MonoBehaviour {
 //		Vector3 aimPoint = new Vector3 (target.x, target.y, 0) - transform.position;
 //		lookRotation = Quaternion.LookRotation (aimPoint);
 		Vector3 dir = enemy.transform.position - transform.position;
-		float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+		float angle = (Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg) + 90;
 		lookRotation = Quaternion.AngleAxis(angle, Vector3.forward);
 	}
 
