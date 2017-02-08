@@ -130,7 +130,8 @@ public class GC : MonoBehaviour {
 	}
 
 	void createTowers() {
-		if(Input.GetButtonDown("Fire1")) {
+		if(!UI.localUI.isMouseOver && Input.GetButtonDown("Fire1")) {
+
 			// Physics.Raycast(transform.position, , )
 //			Vector3 towerPosition = Input.mousePosition;
 //			towerPosition.z = 0;
