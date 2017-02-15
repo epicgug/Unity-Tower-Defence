@@ -10,6 +10,7 @@ public class UI : MonoBehaviour {
 	public Button button;
 	public bool isMouseOver;
 	public static UI localUI;
+	public Text testInfoHash;
 
 	// Use this for initialization
 	void Start () {
@@ -34,12 +35,14 @@ public class UI : MonoBehaviour {
 
 	public void mouseIsOver() {
 		isMouseOver = true;
-		Debug.Log ("wew");
 	}
 
 	public void mouseNotOver() {
 		isMouseOver = false;
-		Debug.Log ("lad");
+	}
+
+	public void updateButtons() {
+		
 	}
 
 }

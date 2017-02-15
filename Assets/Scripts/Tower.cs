@@ -14,21 +14,19 @@ public class Tower : MonoBehaviour, ISelectable {
 	public LineRenderer line;
 	public SpriteRenderer spriteRenderer;
 
-
 	private List<Enemy> currentCollisions = new List<Enemy>();
 	private float timer;
 	private Quaternion lookRotation;
 	public Enemy enemy;
+
 	// Use this for initialization
 	void Start () {
-
 		radiusCollider.radius = radius;
 		// Debug.Log(AssetDatabase.GetAssetPath);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		checkForSelection ();
 		timer += Time.deltaTime;
 
 		if(enemy != null) {
@@ -50,22 +48,9 @@ public class Tower : MonoBehaviour, ISelectable {
 		checkShoot ();
 	}
 
-	void checkForSelection() {
-		if(Input.GetMouseButtonDown(0)) {
-			RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-			foreach (RaycastHit2D hit in hits) {
-				if(hit.collider.gameObject.tag == "Tower") {
-					Debug.Log ("mousebutton");
-					GC.local.Selected = hit.collider.gameObject.GetComponent<Tower> ();
-				}
-			}
-		}
-	}
-
-
 	public void Select() {
 		spriteRenderer.color = Color.red;
-		Debug.Log ("select");
+		UI.localUI.testInfoHash.text = this.GetHashCode () + "";
 	}
 
 	public void Deselect() {

@@ -34,6 +34,25 @@ public class GC : MonoBehaviour {
 	private float rockMonsterLastSpawnTime;
 	private float lastSpawnTime;
 
+	/*
+	 * delegate MathDelegate(float x);
+	 * 
+	 * MathDelegate myDel;
+	 * 
+	 * float f(x)
+	 * 	return 2*x;
+	 * 
+	 * float g(x)
+	 * 	return 2+x;
+	 * 
+	 * myDel = f;
+	 * 
+	 * print myDel(3);
+	 * equals 6
+	 * 
+	*/
+	delegate void TowerPlacementDelegate();
+
 	private ISelectable selected;
 
 
@@ -47,8 +66,12 @@ public class GC : MonoBehaviour {
 				this.selected.Deselect ();
 			}
 			this.selected = value;
-			Debug.Log (this.selected);
-			this.selected.Select ();
+//			Debug.Log ("this is selected: " + this.selected);
+			if (this.selected != null) {
+				this.selected.Select ();
+			} else {
+				UI.localUI.testInfoHash.text = "";
+			}
 		}
 	}
 
@@ -122,12 +145,35 @@ public class GC : MonoBehaviour {
 		if(!gameStart) {
 			createTowers ();
 			waveManager();
+			checkForSelection ();
 		}
 	}
 
 	void makeGoblin() {
 		Instantiate (goblin);
 	}
+
+	void holdTowerUnderMouse() {
+		
+	}
+
+	void checkForSelection() {
+		if(!UI.localUI.isMouseOver && Input.GetMouseButtonDown(0)) {
+			RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+			foreach (RaycastHit2D hit in hits) {
+				if(hit.collider.gameObject.tag == "Tower") {
+					this.Selected = hit.collider.gameObject.GetComponent<Tower> ();
+					Debug.Log ("checkforselection tower");
+					return;
+				} else {
+					if(this.Selected != null)
+						this.Selected = null;
+					
+				}
+			}
+		}
+	}
+
 
 	void createTowers() {
 		if(!UI.localUI.isMouseOver && Input.GetButtonDown("Fire1")) {
