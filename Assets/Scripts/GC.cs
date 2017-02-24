@@ -16,8 +16,9 @@ public class GC : MonoBehaviour {
 
 	public static GC local;
 
-	public float money;
 	public float cannonTowerCost;
+	public float startingGold;
+	public float gold;
 
 	public bool canPlaceTower;
 	public float timeBetweenWaves;
@@ -34,23 +35,6 @@ public class GC : MonoBehaviour {
 	private float rockMonsterLastSpawnTime;
 	private float lastSpawnTime;
 
-	/*
-	 * delegate MathDelegate(float x);
-	 * 
-	 * MathDelegate myDel;
-	 * 
-	 * float f(x)
-	 * 	return 2*x;
-	 * 
-	 * float g(x)
-	 * 	return 2+x;
-	 * 
-	 * myDel = f;
-	 * 
-	 * print myDel(3);
-	 * equals 6
-	 * 
-	*/
 	delegate void TowerPlacementDelegate();
 
 	private ISelectable selected;
@@ -70,7 +54,7 @@ public class GC : MonoBehaviour {
 			if (this.selected != null) {
 				this.selected.Select ();
 			} else {
-				UI.localUI.testInfoHash.text = "";
+//				UI.localUI.testInfoHash.text = "";
 			}
 		}
 	}
@@ -138,6 +122,7 @@ public class GC : MonoBehaviour {
 		lastSpawnTime = Time.time;
 		goblinLastSpawnTime = Time.time;
 		rockMonsterLastSpawnTime = Time.time;
+		gold = startingGold;
 	}
 
 	// Update is called once per frame
@@ -193,13 +178,14 @@ public class GC : MonoBehaviour {
 //			}
 			Grid grid = GameObject.Find ("Grid").GetComponent<Grid> ();
 			RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-//			Debug.Log (Camera.main.ScreenToWorldPoint (Input.mousePosition));
 			foreach(RaycastHit2D hit in hits) {
 				if((hit.collider.gameObject.name == "Land Collision")) {
 					Vector3 mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 					Vector3 smoothPoint = grid.remapPoint (mousePos);
-					if (grid.placeTower (smoothPoint)) {
+					if (grid.placeTower (smoothPoint) && (gold - cannonTowerCost) > 0 && UI.localUI.placingCannon) {
 						Instantiate (cannonTower, new Vector3 (smoothPoint.x, smoothPoint.y, 0), Quaternion.identity);
+						gold -= cannonTowerCost;
+						UI.localUI.PlacingTowerButtonDelegate = UI.localUI.noPlacing;
 					}
 				}
 			}

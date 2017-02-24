@@ -50,7 +50,7 @@ public class Tower : MonoBehaviour, ISelectable {
 
 	public void Select() {
 		spriteRenderer.color = Color.red;
-		UI.localUI.testInfoHash.text = this.GetHashCode () + "";
+//		UI.localUI.testInfoHash.text = this.GetHashCode () + "";
 	}
 
 	public void Deselect() {
