@@ -35,6 +35,8 @@ public class GC : MonoBehaviour {
 	private float rockMonsterLastSpawnTime;
 	private float lastSpawnTime;
 
+	public void g(ref float n) { n = 4.4f; }
+
 	delegate void TowerPlacementDelegate();
 
 	private ISelectable selected;
@@ -117,7 +119,12 @@ public class GC : MonoBehaviour {
 		GC.nodes = GameObject.Find ("Path").GetComponent<Path> ().nodes;
 	}
 
+	
+
 	void Start () {
+		float z = 3;
+		g (ref z);
+		Debug.Log (z);
 		GC.local = this;
 		lastSpawnTime = Time.time;
 		goblinLastSpawnTime = Time.time;
@@ -176,20 +183,20 @@ public class GC : MonoBehaviour {
 //					Instantiate (cannonTower, hit.transform.position, Quaternion.identity);			
 //				} 
 //			}
-			Grid grid = GameObject.Find ("Grid").GetComponent<Grid> ();
 			RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 			foreach(RaycastHit2D hit in hits) {
 				if((hit.collider.gameObject.name == "Land Collision")) {
+					
 					Vector3 mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-					Vector3 smoothPoint = grid.remapPoint (mousePos);
-					if (grid.placeTower (smoothPoint) && (gold - cannonTowerCost) > 0 && UI.localUI.placingCannon) {
+					Vector3 smoothPoint = Grid.local.remapPoint (mousePos);
+					if (Grid.local.placeTower (smoothPoint) && gold > cannonTowerCost && UI.localUI.placingCannon) {
+						
 						Instantiate (cannonTower, new Vector3 (smoothPoint.x, smoothPoint.y, 0), Quaternion.identity);
 						gold -= cannonTowerCost;
 						UI.localUI.PlacingTowerButtonDelegate = UI.localUI.noPlacing;
 					}
 				}
 			}
-
 			// if (Physics.Raycast (ray, out hit)) {
 			// 	Debug.Log ("dkfd");
 			// 	if(hit.collider.gameObject.name == "Path Collision") {

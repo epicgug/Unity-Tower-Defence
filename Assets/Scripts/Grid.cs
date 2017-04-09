@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour {
 
+	public static Grid local;
+
 	public float minX;
 	public float minY;
 	public float maxX;
@@ -15,7 +17,7 @@ public class Grid : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+		Grid.local = this;
 	}
 	
 	// Update is called once per frame

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 
 public class Tower : MonoBehaviour, ISelectable {
+	
 	public float shootRate;
 	public float radius;
 	public float damage;
 	public float turnRate;
-	public float shotSpeed;
 
 	public Transform cannonMuzzle;
 	public GameObject cannonProjectile;
@@ -18,6 +18,14 @@ public class Tower : MonoBehaviour, ISelectable {
 	private float timer;
 	private Quaternion lookRotation;
 	public Enemy enemy;
+
+	public string UIInfo {
+		get {
+			return "Fire Rate: " + shootRate + "\n"
+				+ "Range: " + radius + "\n"
+				+ "Damage: "+ damage;
+		}
+	} 
 
 	// Use this for initialization
 	void Start () {
@@ -55,6 +63,10 @@ public class Tower : MonoBehaviour, ISelectable {
 
 	public void Deselect() {
 		spriteRenderer.color = Color.white;
+	}
+
+	public void upgrade() {
+		shootRate /= 2;
 	}
 
 //	void OnCollisionEnter2D(Collision2D col) {
