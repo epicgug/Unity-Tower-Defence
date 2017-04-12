@@ -11,6 +11,4 @@ public interface ISelectable {
 		get;
 	}
 
-	void upgrade();
-
 }

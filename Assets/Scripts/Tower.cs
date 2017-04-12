@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class Tower : MonoBehaviour, ISelectable {
+public class Tower : MonoBehaviour, ISelectable, IUpgradable {
 	
 	public float shootRate;
 	public float radius;
@@ -64,9 +64,17 @@ public class Tower : MonoBehaviour, ISelectable {
 	public void Deselect() {
 		spriteRenderer.color = Color.white;
 	}
+		
+	public void upgradeDamage() {
+		
+	}
 
-	public void upgrade() {
-		shootRate /= 2;
+	public void upgradeShotSpeed() {
+		
+	}
+
+	public void upgradeRange() {
+		
 	}
 
 //	void OnCollisionEnter2D(Collision2D col) {

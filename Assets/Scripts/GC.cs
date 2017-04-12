@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GC : MonoBehaviour {
 	[System.Serializable]
@@ -28,6 +29,7 @@ public class GC : MonoBehaviour {
 	public Wave[] waves;
 	public static Vector2[] nodes;
 	public GameObject goblin, cannonTower;
+	public Dictionary<int, IUpgradable> upgradables;
 
 	private int goblinsSpawned;
 	private int rockMonstersSpawned;
@@ -130,6 +132,7 @@ public class GC : MonoBehaviour {
 		goblinLastSpawnTime = Time.time;
 		rockMonsterLastSpawnTime = Time.time;
 		gold = startingGold;
+		upgradables = new Dictionary<int, IUpgradable> ();
 	}
 
 	// Update is called once per frame
@@ -191,7 +194,8 @@ public class GC : MonoBehaviour {
 					Vector3 smoothPoint = Grid.local.remapPoint (mousePos);
 					if (Grid.local.placeTower (smoothPoint) && gold > cannonTowerCost && UI.localUI.placingCannon) {
 						
-						Instantiate (cannonTower, new Vector3 (smoothPoint.x, smoothPoint.y, 0), Quaternion.identity);
+						Tower newTower = Instantiate (cannonTower, new Vector3 (smoothPoint.x, smoothPoint.y, 0), Quaternion.identity).GetComponent<Tower>();
+						upgradables.Add (newTower.GetHashCode (), newTower);
 						gold -= cannonTowerCost;
 						UI.localUI.PlacingTowerButtonDelegate = UI.localUI.noPlacing;
 					}
