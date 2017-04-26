@@ -138,7 +138,6 @@ MonoBehaviour:
   radius: 2
   damage: 5
   turnRate: 6
-  shotSpeed: 1
   cannonMuzzle: {fileID: 4548454624600744}
   cannonProjectile: {fileID: 1000010100426988, guid: 8a89aa1aa271f4e36b15e4ee57af87cb,
     type: 2}
@@ -146,6 +145,8 @@ MonoBehaviour:
   line: {fileID: 120243054540709594}
   spriteRenderer: {fileID: 212334923639125426}
   enemy: {fileID: 0}
+  damageUpgrades: 05000000080000000a000000
+  damageUpgradesCost: 
 --- !u!120 &120243054540709594
 LineRenderer:
   m_ObjectHideFlags: 1

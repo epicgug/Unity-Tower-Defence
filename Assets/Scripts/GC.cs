@@ -156,9 +156,12 @@ public class GC : MonoBehaviour {
 		if(!UI.localUI.isMouseOver && Input.GetMouseButtonDown(0)) {
 			RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 			foreach (RaycastHit2D hit in hits) {
-				if(hit.collider.gameObject.tag == "Tower") {
+				if (hit.collider.gameObject.tag == "Tower") {
 					this.Selected = hit.collider.gameObject.GetComponent<Tower> ();
 					Debug.Log ("checkforselection tower");
+					return;
+				} else if (hit.collider.gameObject.tag == "Enemy") {
+					this.Selected = hit.collider.gameObject.GetComponent<Enemy> ();
 					return;
 				} else {
 					if(this.Selected != null)
@@ -167,6 +170,14 @@ public class GC : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	void removeGold(int amount) {
+		gold -= amount;
+	}
+
+	void addGold(int amount) {
+		gold += amount;
 	}
 
 

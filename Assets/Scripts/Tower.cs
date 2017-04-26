@@ -19,24 +19,37 @@ public class Tower : MonoBehaviour, ISelectable, IUpgradable {
 	private Quaternion lookRotation;
 	public Enemy enemy;
 
+	public int[] damageUpgrades;
+	public int[] damageUpgradesCost;
+	public float shootRateUpgradeChange = .05f;
+	public int damageUpgradeChange = 3;
+	public float rangeUpgradeChange = .5f;
+
 	public string UIInfo {
 		get {
-			return "Fire Rate: " + shootRate + "\n"
-				+ "Range: " + radius + "\n"
+			return "Fire Rate: " +  string.Format("{0:0.00}", shootRate) + "\n"
+				+ "Range: " + string.Format("{0:0.00}", radius) + "\n"
 				+ "Damage: "+ damage;
 		}
 	} 
 
+	public string type {
+		get {
+			return "Tower";
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
-		radiusCollider.radius = radius;
+
+		damage = damageUpgrades [0];
 		// Debug.Log(AssetDatabase.GetAssetPath);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		timer += Time.deltaTime;
-
+		radiusCollider.radius = radius;
 		if(enemy != null) {
 			line.SetPosition (0, transform.position);
 			line.SetPosition (1, enemy.transform.position);
@@ -51,7 +64,6 @@ public class Tower : MonoBehaviour, ISelectable, IUpgradable {
 		if (enemy != null) {
 			AimPosition (enemy.transform.position);	
 		}
-
 		calculateFarthestEnemy ();
 		checkShoot ();
 	}
@@ -66,15 +78,22 @@ public class Tower : MonoBehaviour, ISelectable, IUpgradable {
 	}
 		
 	public void upgradeDamage() {
-		
+		damage += 1;
+		GC.local.gold -= 20;
 	}
 
 	public void upgradeShotSpeed() {
-		
+		if(shootRate < shootRateUpgradeChange) {
+			Debug.Log ("fix");
+		} else {
+			shootRate -= shootRateUpgradeChange;
+			GC.local.gold -= 20;
+		}
 	}
 
 	public void upgradeRange() {
-		
+		radius += 0.5f;
+		GC.local.gold -= 20;
 	}
 
 //	void OnCollisionEnter2D(Collision2D col) {

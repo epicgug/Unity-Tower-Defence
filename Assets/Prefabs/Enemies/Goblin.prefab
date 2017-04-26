@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 114000010183965630}
   - component: {fileID: 61000011466690310}
   m_Layer: 0
-  m_Name: _Goblin
+  m_Name: Goblin
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -148,6 +148,7 @@ MonoBehaviour:
   maxHealth: 10
   pathNodeIndex: 0
   t: 0
+  spriteRenderer: {fileID: 212000011582101696}
   healthBar: {fileID: 1000010384726396}
 --- !u!114 &114000010361456400
 MonoBehaviour:

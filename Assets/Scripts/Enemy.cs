@@ -2,13 +2,14 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : MonoBehaviour, ISelectable{
 
 	public float health, speed, size, nodeDistThreshhold, speedMin, speedMax, jiggleVariance, maxVariance;
 	public float maxHealth;
 	public int pathNodeIndex; 
 	private Vector2 nextPointDirection, offset;
 	public float t;
+	public SpriteRenderer spriteRenderer;
 
 	public GameObject healthBar;
 
@@ -64,7 +65,11 @@ public class Enemy : MonoBehaviour {
 	void receiveDamage(float damage) {
 		health -= damage;
 		if(health <= 0) {
+			if (this.GetHashCode () == GC.local.Selected.GetHashCode ()) {
+				GC.local.Selected = null;
+			}
 			Destroy (this.gameObject);
+			GC.local.gold += 5;
 		}
 		float calcHealth = health / maxHealth;
 		setHealthBar(calcHealth);
@@ -72,5 +77,26 @@ public class Enemy : MonoBehaviour {
 
 	void setHealthBar(float health) {
 		healthBar.transform.localScale = new Vector3(health, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
+	}
+
+	public void Select() {
+		spriteRenderer.color = Color.red;
+	}
+
+	public void Deselect() {
+		spriteRenderer.color = Color.white;
+	}
+
+	public string UIInfo {
+		get {
+			return "Type: " + this.gameObject.name + "\n"
+			+ "Health: " + health;
+		}
+	} 
+
+	public string type {
+		get {
+			return "Enemy";
+		}
 	}
  }

@@ -11,4 +11,8 @@ public interface ISelectable {
 		get;
 	}
 
+	string type {
+		get;
+	}
+
 }

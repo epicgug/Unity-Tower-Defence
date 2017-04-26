@@ -18,6 +18,9 @@ public class UI : MonoBehaviour {
 	public GameObject cannonSprite;
 	public bool placingCannon;
 
+	public GameObject upgradePanel;
+	public GameObject towerPanel;
+
 	private GameObject temporaryTower;
 
 	public delegate void placeTowerDelegate();
@@ -71,20 +74,21 @@ public class UI : MonoBehaviour {
 	void Update () {
 		if (GC.local.Selected != null) {
 			testInfoHash.text = GC.local.Selected.UIInfo;
-			testInfoHash.gameObject.SetActive(true);
-			damageUpgradeButton.gameObject.SetActive (true);
-			shotSpeedUpgradeButton.gameObject.SetActive (true);
-			rangeUpgradeButton.gameObject.SetActive (true);
-			cannonButton.gameObject.SetActive(false);
+			testInfoHash.gameObject.SetActive (true);
+			towerPanel.gameObject.SetActive (false);
+			if (GC.local.Selected.type == "Tower") {
+				upgradePanel.gameObject.SetActive (true);
+			}
+			else {
+				upgradePanel.gameObject.SetActive (!true);
+			}
 		} else {
-			cannonButton.gameObject.SetActive(true);
-			shotSpeedUpgradeButton.gameObject.SetActive (false);
-			rangeUpgradeButton.gameObject.SetActive (false);
-			damageUpgradeButton.gameObject.SetActive (false);
-			testInfoHash.gameObject.SetActive(false);
+			towerPanel.gameObject.SetActive (true);
+			upgradePanel.gameObject.SetActive (false);
+			testInfoHash.gameObject.SetActive (false);
 		}
 		updateText ();
-		if(PlacingTowerButtonDelegate != null)
+		if (PlacingTowerButtonDelegate != null)
 			PlacingTowerButtonDelegate ();
 	}
 
