@@ -29,7 +29,7 @@ public class GC : MonoBehaviour {
 	public Wave[] waves;
 	public static Vector2[] nodes;
 	public GameObject goblin, cannonTower;
-	public Dictionary<int, IUpgradable> upgradables;
+	public Dictionary<int, Tower> upgradables;
 
 	private int goblinsSpawned;
 	private int rockMonstersSpawned;

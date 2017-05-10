@@ -76,7 +76,7 @@ public class UI : MonoBehaviour {
 			testInfoHash.text = GC.local.Selected.UIInfo;
 			testInfoHash.gameObject.SetActive (true);
 			towerPanel.gameObject.SetActive (false);
-			if (GC.local.Selected.type == "Tower") {
+			if (GC.local.Selected.type.Contains == "Tower") {
 				upgradePanel.gameObject.SetActive (true);
 			}
 			else {
