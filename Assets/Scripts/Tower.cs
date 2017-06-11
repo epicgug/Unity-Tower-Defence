@@ -7,11 +7,12 @@ public class Tower : MonoBehaviour, ISelectable, IUpgradable {
 	public float radius;
 	public float damage;
 
-	public GameObject cannonProjectile;
-	public CircleCollider2D radiusCollider;
-	private List<Enemy> currentCollisions = new List<Enemy>();
 
-	private float shotTimer;
+	public CircleCollider2D radiusCollider;
+	public List<Enemy> currentCollisions = new List<Enemy>();
+	public SpriteRenderer spriteRenderer;
+
+	public float shotTimer;
 	public Enemy targetEnemy;
 
 	public float shootRateUpgradeChange;
@@ -34,18 +35,12 @@ public class Tower : MonoBehaviour, ISelectable, IUpgradable {
 	public virtual void Select() {}
 	public virtual void Deselect() {}
 
-	void Start () {}
-	void Update () {} 
-
 	public virtual void upgradeDamage() {}
 	public virtual void upgradeShotSpeed() {}
 	public virtual void upgradeRange() {}
 
-	void OnTriggerEnter2D() {}
-	void OnTriggerExit2D() {}
-
-	virtual void checkShoot() {}
-	virtual void attack () {}
+	protected virtual void checkShoot() {}
+	protected virtual void attack () {}
 
 
 }

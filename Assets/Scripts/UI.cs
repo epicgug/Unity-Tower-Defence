@@ -8,6 +8,7 @@ public class UI : MonoBehaviour {
 	public GC GC;
 	public static UI localUI;
 	public Button cannonButton;
+	public Button AoEButton;
 	public Button damageUpgradeButton;
 	public Button rangeUpgradeButton;
 	public Button shotSpeedUpgradeButton;
@@ -16,7 +17,10 @@ public class UI : MonoBehaviour {
 	public Text testInfoHash;
 	public Text goldText;
 	public GameObject cannonSprite;
+	public GameObject AoESprite;
 	public bool placingCannon;
+	public bool placingAoE;
+	public string towerBeingPlaced;
 
 	public GameObject upgradePanel;
 	public GameObject towerPanel;
@@ -29,7 +33,8 @@ public class UI : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		GC = GameObject.Find ("GameController").GetComponent<GC> ();
-		cannonButton.onClick.AddListener (TaskOnClick);
+		cannonButton.onClick.AddListener (CannonButtonClick);
+		AoEButton.onClick.AddListener (AoEButtonClick);
 		damageUpgradeButton.onClick.AddListener (upgradeDamageButtonClick);
 		rangeUpgradeButton.onClick.AddListener (upgradeRangeButtonClick);
 		shotSpeedUpgradeButton.onClick.AddListener (upgradeShotSpeedButtonClick);
@@ -39,13 +44,15 @@ public class UI : MonoBehaviour {
 
 	public void noPlacing () {
 		GameObject.DestroyObject (temporaryTower);
-
-		placingCannon = false;
+		towerBeingPlaced = "None";
 	}
 
 	void cannonTowerPlacing() {
 		temporaryTower.transform.position = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, -4);
+	}
 
+	void AoETowerPlacing() {
+		temporaryTower.transform.position = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, -4);
 	}
 
 	void upgradeDamageButtonClick() {
@@ -63,12 +70,22 @@ public class UI : MonoBehaviour {
 			GC.local.upgradables[GC.local.Selected.GetHashCode()].upgradeRange();		
 	}
 
-	void TaskOnClick(){
-		Debug.Log ("You have clicked the button!");
+	void CannonButtonClick(){
+		if(temporaryTower != null) {
+			GameObject.DestroyObject (temporaryTower);
+		}
 		temporaryTower = Instantiate (cannonSprite, Input.mousePosition, Quaternion.identity);
 		PlacingTowerButtonDelegate = cannonTowerPlacing;
-		placingCannon = true;
+		towerBeingPlaced = "Cannon";
+	}
 
+	void AoEButtonClick() {
+		if(temporaryTower != null) {
+			GameObject.DestroyObject (temporaryTower);
+		}
+		temporaryTower = Instantiate (AoESprite, Input.mousePosition, Quaternion.identity);
+		PlacingTowerButtonDelegate = AoETowerPlacing;
+		towerBeingPlaced = "AoE";
 	}
 	
 	void Update () {
@@ -76,7 +93,7 @@ public class UI : MonoBehaviour {
 			testInfoHash.text = GC.local.Selected.UIInfo;
 			testInfoHash.gameObject.SetActive (true);
 			towerPanel.gameObject.SetActive (false);
-			if (GC.local.Selected.type.Contains == "Tower") {
+			if (GC.local.Selected.type.Contains("Tower")) {
 				upgradePanel.gameObject.SetActive (true);
 			}
 			else {

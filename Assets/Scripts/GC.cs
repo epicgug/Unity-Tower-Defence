@@ -17,7 +17,8 @@ public class GC : MonoBehaviour {
 
 	public static GC local;
 
-	public float cannonTowerCost;
+	public Dictionary<string, float> towerCosts;
+	public Dictionary<string, GameObject> towerObjects;
 	public float startingGold;
 	public float gold;
 
@@ -28,16 +29,14 @@ public class GC : MonoBehaviour {
 
 	public Wave[] waves;
 	public static Vector2[] nodes;
-	public GameObject goblin, cannonTower;
-	public Dictionary<int, Tower> upgradables;
+	public GameObject goblin, cannonTower, AoETower;
+	public Dictionary<int, IUpgradable> upgradables;
 
 	private int goblinsSpawned;
 	private int rockMonstersSpawned;
 	private float goblinLastSpawnTime;
 	private float rockMonsterLastSpawnTime;
 	private float lastSpawnTime;
-
-	public void g(ref float n) { n = 4.4f; }
 
 	delegate void TowerPlacementDelegate();
 
@@ -124,9 +123,12 @@ public class GC : MonoBehaviour {
 	
 
 	void Start () {
-		float z = 3;
-		g (ref z);
-		Debug.Log (z);
+		towerCosts = new Dictionary<string, float> ();
+		towerCosts.Add ("Cannon", 60);
+		towerCosts.Add ("AoE", 80);
+		towerObjects = new Dictionary<string, GameObject> ();
+		towerObjects.Add ("Cannon", cannonTower);
+		towerObjects.Add ("AoE", AoETower);
 		GC.local = this;
 		lastSpawnTime = Time.time;
 		goblinLastSpawnTime = Time.time;
@@ -158,7 +160,7 @@ public class GC : MonoBehaviour {
 			foreach (RaycastHit2D hit in hits) {
 				if (hit.collider.gameObject.tag == "Tower") {
 					this.Selected = hit.collider.gameObject.GetComponent<Tower> ();
-					Debug.Log ("checkforselection tower");
+//					Debug.Log ("checkforselection tower");
 					return;
 				} else if (hit.collider.gameObject.tag == "Enemy") {
 					this.Selected = hit.collider.gameObject.GetComponent<Enemy> ();
@@ -200,14 +202,13 @@ public class GC : MonoBehaviour {
 			RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 			foreach(RaycastHit2D hit in hits) {
 				if((hit.collider.gameObject.name == "Land Collision")) {
-					
 					Vector3 mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 					Vector3 smoothPoint = Grid.local.remapPoint (mousePos);
-					if (Grid.local.placeTower (smoothPoint) && gold > cannonTowerCost && UI.localUI.placingCannon) {
-						
-						Tower newTower = Instantiate (cannonTower, new Vector3 (smoothPoint.x, smoothPoint.y, 0), Quaternion.identity).GetComponent<Tower>();
+					if (Grid.local.placeTower (smoothPoint)
+						&& UI.localUI.towerBeingPlaced != "None") {
+						Tower newTower = Instantiate (towerObjects[UI.localUI.towerBeingPlaced], new Vector3 (smoothPoint.x, smoothPoint.y, 0), Quaternion.identity).GetComponent<Tower>();
 						upgradables.Add (newTower.GetHashCode (), newTower);
-						gold -= cannonTowerCost;
+						gold -= towerCosts[UI.localUI.towerBeingPlaced];
 						UI.localUI.PlacingTowerButtonDelegate = UI.localUI.noPlacing;
 					}
 				}

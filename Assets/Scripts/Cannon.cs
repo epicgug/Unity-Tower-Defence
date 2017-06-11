@@ -4,30 +4,14 @@ using UnityEngine;
 
 public class Cannon : Tower {
 
-
-	public float shootRate;
-	public float radius;
-	public float damage;
 	public float turnRate;
 
 	public Transform cannonMuzzle;
 	public GameObject cannonProjectile;
-	public CircleCollider2D radiusCollider;
-	public SpriteRenderer spriteRenderer;
-
-	private List<Enemy> currentCollisions = new List<Enemy>();
-	private float shotTimer;
 	private Quaternion lookRotation;
-	public Enemy targetEnemy;
 
 	public int[] damageUpgrades;
 	public int[] damageUpgradesCost;
-	public float shootRateUpgradeChange = .05f;
-	public int damageUpgradeChange = 3;
-	public float rangeUpgradeChange = .5f;
-	public float shootRateUpgradeCost = 20;
-	public float damageUpgradeCost = 20;
-	public float rangeUpgradeCost = 20;
 
 	public string UIInfo {
 		get {
@@ -45,7 +29,13 @@ public class Cannon : Tower {
 
 	// Use this for initialization
 	void Start () {
-
+		radiusCollider.radius = radius;
+		shootRateUpgradeChange = .05f;
+		damageUpgradeChange = 3;
+		rangeUpgradeChange = .5f;
+		shootRateUpgradeCost = 20;
+		damageUpgradeCost = 20;
+		rangeUpgradeCost = 20;
 		damage = 5;
 		// Debug.Log(AssetDatabase.GetAssetPath);
 	}
@@ -53,7 +43,7 @@ public class Cannon : Tower {
 	// Update is called once per frame
 	void Update () {
 		shotTimer += Time.deltaTime;
-		radiusCollider.radius = radius;
+
 
 		if(currentCollisions.Count != 0) {
 			if(lookRotation != null)
@@ -68,21 +58,21 @@ public class Cannon : Tower {
 		checkShoot ();
 	}
 
-	public void Select() {
+	public override void Select() {
 		spriteRenderer.color = Color.red;
 		//		UI.localUI.testInfoHash.text = this.GetHashCode () + "";
 	}
 
-	public void Deselect() {
+	public override void Deselect() {
 		spriteRenderer.color = Color.white;
 	}
 
-	public void upgradeDamage() {
+	public override void upgradeDamage() {
 		damage += 1;
 		GC.local.gold -= damageUpgradeCost;
 	}
 
-	public void upgradeShotSpeed() {
+	public override void upgradeShotSpeed() {
 		if(shootRate < shootRateUpgradeChange) {
 			Debug.Log ("fix");
 		} else {
@@ -91,9 +81,10 @@ public class Cannon : Tower {
 		}
 	}
 
-	public void upgradeRange() {
+	public override void upgradeRange() {
 		radius += 0.5f;
 		GC.local.gold -= rangeUpgradeCost;
+		radiusCollider.radius = radius;
 	}
 
 	//	void OnCollisionEnter2D(Collision2D col) {
@@ -103,7 +94,8 @@ public class Cannon : Tower {
 	//
 	void OnTriggerEnter2D(Collider2D col) {
 		//Debug.Log ("entered");
-		currentCollisions.Add (col.gameObject.GetComponent<Enemy>());
+		if(col.gameObject.GetComponent<Enemy>() != null)
+			currentCollisions.Add (col.gameObject.GetComponent<Enemy>());
 	}
 
 	void OnTriggerExit2D (Collider2D col) {
@@ -115,7 +107,7 @@ public class Cannon : Tower {
 
 	}
 
-	void checkShoot() {
+	protected override void checkShoot() {
 		if(shotTimer >= shootRate && targetEnemy != null) {
 			attack ();
 		}
@@ -149,7 +141,7 @@ public class Cannon : Tower {
 
 	}
 
-	void attack() {
+	protected override void attack() {
 		shotTimer = 0f;
 		GameObject bullet = (GameObject)Instantiate (cannonProjectile, cannonMuzzle.position, cannonMuzzle.rotation);
 		if (bullet != null) {
