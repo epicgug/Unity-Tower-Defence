@@ -63,6 +63,7 @@ public class Enemy : MonoBehaviour, ISelectable{
 	}
 
 	void receiveDamage(float damage) {
+		Debug.Log ("enemy shot!");
 		health -= damage;
 		if(health <= 0) {
 			if (this.GetHashCode () == GC.local.Selected.GetHashCode ()) {

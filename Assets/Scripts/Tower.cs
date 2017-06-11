@@ -2,169 +2,45 @@
 using System.Collections.Generic;
 
 public class Tower : MonoBehaviour, ISelectable, IUpgradable {
-	
+
 	public float shootRate;
 	public float radius;
 	public float damage;
-	public float turnRate;
 
-	public Transform cannonMuzzle;
-	public GameObject cannonProjectile;
+
 	public CircleCollider2D radiusCollider;
-	public LineRenderer line;
+	public List<Enemy> currentCollisions = new List<Enemy>();
 	public SpriteRenderer spriteRenderer;
 
-	private List<Enemy> currentCollisions = new List<Enemy>();
-	private float timer;
-	private Quaternion lookRotation;
-	public Enemy enemy;
+	public float shotTimer;
+	public Enemy targetEnemy;
 
-	public int[] damageUpgrades;
-	public int[] damageUpgradesCost;
-	public float shootRateUpgradeChange = .05f;
-	public int damageUpgradeChange = 3;
-	public float rangeUpgradeChange = .5f;
+	public float shootRateUpgradeChange;
+	public float damageUpgradeChange;
+	public float rangeUpgradeChange;
+	public float shootRateUpgradeCost;
+	public float damageUpgradeCost;
+	public float rangeUpgradeCost;
 
-	public string UIInfo {
-		get {
-			return "Fire Rate: " +  string.Format("{0:0.00}", shootRate) + "\n"
-				+ "Range: " + string.Format("{0:0.00}", radius) + "\n"
-				+ "Damage: "+ damage;
-		}
+	public virtual string UIInfo {
+		get { return ""; }
 	} 
 
-	public string type {
+	public virtual string type {
 		get {
 			return "Tower";
 		}
 	}
 
-	// Use this for initialization
-	void Start () {
+	public virtual void Select() {}
+	public virtual void Deselect() {}
 
-		damage = damageUpgrades [0];
-		// Debug.Log(AssetDatabase.GetAssetPath);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		timer += Time.deltaTime;
-		radiusCollider.radius = radius;
-		if(enemy != null) {
-			line.SetPosition (0, transform.position);
-			line.SetPosition (1, enemy.transform.position);
-		}
+	public virtual void upgradeDamage() {}
+	public virtual void upgradeShotSpeed() {}
+	public virtual void upgradeRange() {}
 
-		if(currentCollisions.Count != 0) {
-			if(lookRotation != null)
-				if(Time.deltaTime > 0)
-					cannonMuzzle.rotation = Quaternion.Lerp (cannonMuzzle.rotation, lookRotation, Time.deltaTime * turnRate);
-		}
-
-		if (enemy != null) {
-			AimPosition (enemy.transform.position);	
-		}
-		calculateFarthestEnemy ();
-		checkShoot ();
-	}
-
-	public void Select() {
-		spriteRenderer.color = Color.red;
-//		UI.localUI.testInfoHash.text = this.GetHashCode () + "";
-	}
-
-	public void Deselect() {
-		spriteRenderer.color = Color.white;
-	}
-		
-	public void upgradeDamage() {
-		damage += 1;
-		GC.local.gold -= 20;
-	}
-
-	public void upgradeShotSpeed() {
-		if(shootRate < shootRateUpgradeChange) {
-			Debug.Log ("fix");
-		} else {
-			shootRate -= shootRateUpgradeChange;
-			GC.local.gold -= 20;
-		}
-	}
-
-	public void upgradeRange() {
-		radius += 0.5f;
-		GC.local.gold -= 20;
-	}
-
-//	void OnCollisionEnter2D(Collision2D col) {
-//		Debug.Log ("enter");
-//		currentCollisions.Add (col.gameObject.GetComponent<Enemy>());
-//	}
-//
-	void OnTriggerEnter2D(Collider2D col) {
-		//Debug.Log ("entered");
-		currentCollisions.Add (col.gameObject.GetComponent<Enemy>());
-	}
-
-	void OnTriggerExit2D (Collider2D col) {
-		currentCollisions.Remove (col.gameObject.GetComponent<Enemy>());
-		if(currentCollisions.Count == 0) {
-			currentCollisions.Clear ();
-		}
-		currentCollisions.TrimExcess ();
-
-	}
-
-	void checkShoot() {
-		if(timer >= shootRate && enemy != null) {
-			shootTarget ();
-		}
-	}
-
-	void calculateFarthestEnemy() {
-		Enemy farthestTarget = null;
-		int highestIndex = 0;
-		float farthestT = 0;
-		Enemy farthestEnemy = null;
-		for(int i = 0; i < currentCollisions.Count; i++) {
-			if (currentCollisions [i] != null) {
-				if (currentCollisions [i].pathNodeIndex >= highestIndex) {
-					highestIndex = currentCollisions [i].pathNodeIndex;
-					farthestTarget = (currentCollisions [i]);
-				}
-			}
-		}
-		for(int i = 0; i < currentCollisions.Count; i++) {
-			Enemy collider = currentCollisions [i];
-			if (collider == null)
-				continue;
-			if (collider.pathNodeIndex != highestIndex)
-				continue;
-			if (collider.t > farthestT) {
-				farthestT = collider.t;
-				farthestEnemy = collider;
-			}
-		}
-		enemy = farthestEnemy;
-
-	}
-
-	void shootTarget() {
-		timer = 0f;
-		GameObject bullet = (GameObject)Instantiate (cannonProjectile, cannonMuzzle.position, cannonMuzzle.rotation);
-		if (bullet != null) {
-			bullet.SendMessage ("ReceiveEndPoint", enemy);
-			bullet.SendMessage ("setDamage", damage);
-		}
-	}
-
-	void AimPosition(Vector3 target) {
-//		Vector3 aimPoint = new Vector3 (target.x, target.y, 0) - transform.position;
-//		lookRotation = Quaternion.LookRotation (aimPoint);
-		Vector3 dir = enemy.transform.position - transform.position;
-		float angle = (Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg) + 90;
-		lookRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-	}
+	protected virtual void checkShoot() {}
+	protected virtual void attack () {}
 
 
 }
