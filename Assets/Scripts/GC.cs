@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GC : MonoBehaviour {
 	[System.Serializable]
@@ -28,6 +29,7 @@ public class GC : MonoBehaviour {
 	public Wave[] waves;
 	public static Vector2[] nodes;
 	public GameObject goblin, cannonTower;
+	public Dictionary<int, IUpgradable> upgradables;
 
 	private int goblinsSpawned;
 	private int rockMonstersSpawned;
@@ -130,6 +132,7 @@ public class GC : MonoBehaviour {
 		goblinLastSpawnTime = Time.time;
 		rockMonsterLastSpawnTime = Time.time;
 		gold = startingGold;
+		upgradables = new Dictionary<int, IUpgradable> ();
 	}
 
 	// Update is called once per frame
@@ -153,9 +156,12 @@ public class GC : MonoBehaviour {
 		if(!UI.localUI.isMouseOver && Input.GetMouseButtonDown(0)) {
 			RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 			foreach (RaycastHit2D hit in hits) {
-				if(hit.collider.gameObject.tag == "Tower") {
+				if (hit.collider.gameObject.tag == "Tower") {
 					this.Selected = hit.collider.gameObject.GetComponent<Tower> ();
 					Debug.Log ("checkforselection tower");
+					return;
+				} else if (hit.collider.gameObject.tag == "Enemy") {
+					this.Selected = hit.collider.gameObject.GetComponent<Enemy> ();
 					return;
 				} else {
 					if(this.Selected != null)
@@ -164,6 +170,14 @@ public class GC : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	void removeGold(int amount) {
+		gold -= amount;
+	}
+
+	void addGold(int amount) {
+		gold += amount;
 	}
 
 
@@ -191,7 +205,8 @@ public class GC : MonoBehaviour {
 					Vector3 smoothPoint = Grid.local.remapPoint (mousePos);
 					if (Grid.local.placeTower (smoothPoint) && gold > cannonTowerCost && UI.localUI.placingCannon) {
 						
-						Instantiate (cannonTower, new Vector3 (smoothPoint.x, smoothPoint.y, 0), Quaternion.identity);
+						Tower newTower = Instantiate (cannonTower, new Vector3 (smoothPoint.x, smoothPoint.y, 0), Quaternion.identity).GetComponent<Tower>();
+						upgradables.Add (newTower.GetHashCode (), newTower);
 						gold -= cannonTowerCost;
 						UI.localUI.PlacingTowerButtonDelegate = UI.localUI.noPlacing;
 					}

@@ -8,13 +8,18 @@ public class UI : MonoBehaviour {
 	public GC GC;
 	public static UI localUI;
 	public Button cannonButton;
-	public Button upgradeButton;
+	public Button damageUpgradeButton;
+	public Button rangeUpgradeButton;
+	public Button shotSpeedUpgradeButton;
 	public bool isMouseOver;
 	public Text waveText;
 	public Text testInfoHash;
 	public Text goldText;
 	public GameObject cannonSprite;
 	public bool placingCannon;
+
+	public GameObject upgradePanel;
+	public GameObject towerPanel;
 
 	private GameObject temporaryTower;
 
@@ -25,7 +30,9 @@ public class UI : MonoBehaviour {
 	void Start () {
 		GC = GameObject.Find ("GameController").GetComponent<GC> ();
 		cannonButton.onClick.AddListener (TaskOnClick);
-		upgradeButton.onClick.AddListener (upgradeButtonClick);
+		damageUpgradeButton.onClick.AddListener (upgradeDamageButtonClick);
+		rangeUpgradeButton.onClick.AddListener (upgradeRangeButtonClick);
+		shotSpeedUpgradeButton.onClick.AddListener (upgradeShotSpeedButtonClick);
 		isMouseOver = false;
 		UI.localUI = this;
 	}
@@ -41,8 +48,19 @@ public class UI : MonoBehaviour {
 
 	}
 
-	void upgradeButtonClick() {
-		GC.local.Selected.upgrade ();
+	void upgradeDamageButtonClick() {
+		if(GC.local.upgradables.ContainsKey(GC.local.Selected.GetHashCode())) 
+			GC.local.upgradables[GC.local.Selected.GetHashCode()].upgradeDamage();
+	}
+
+	void upgradeShotSpeedButtonClick() {
+		if(GC.local.upgradables.ContainsKey(GC.local.Selected.GetHashCode())) 
+			GC.local.upgradables[GC.local.Selected.GetHashCode()].upgradeShotSpeed();
+	}
+
+	void upgradeRangeButtonClick() {
+		if(GC.local.upgradables.ContainsKey(GC.local.Selected.GetHashCode())) 
+			GC.local.upgradables[GC.local.Selected.GetHashCode()].upgradeRange();		
 	}
 
 	void TaskOnClick(){
@@ -56,16 +74,21 @@ public class UI : MonoBehaviour {
 	void Update () {
 		if (GC.local.Selected != null) {
 			testInfoHash.text = GC.local.Selected.UIInfo;
-			testInfoHash.gameObject.SetActive(true);
-			upgradeButton.gameObject.SetActive (true);
-			cannonButton.gameObject.SetActive(false);
+			testInfoHash.gameObject.SetActive (true);
+			towerPanel.gameObject.SetActive (false);
+			if (GC.local.Selected.type == "Tower") {
+				upgradePanel.gameObject.SetActive (true);
+			}
+			else {
+				upgradePanel.gameObject.SetActive (!true);
+			}
 		} else {
-			cannonButton.gameObject.SetActive(true);
-			upgradeButton.gameObject.SetActive (false);
-			testInfoHash.gameObject.SetActive(false);
+			towerPanel.gameObject.SetActive (true);
+			upgradePanel.gameObject.SetActive (false);
+			testInfoHash.gameObject.SetActive (false);
 		}
 		updateText ();
-		if(PlacingTowerButtonDelegate != null)
+		if (PlacingTowerButtonDelegate != null)
 			PlacingTowerButtonDelegate ();
 	}
 

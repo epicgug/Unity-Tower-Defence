@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 114000010632031324}
   - component: {fileID: 61000012604170572}
   m_Layer: 0
-  m_Name: _Stone Enemy
+  m_Name: Stone Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -175,6 +175,7 @@ MonoBehaviour:
   maxHealth: 50
   pathNodeIndex: 0
   t: 0
+  spriteRenderer: {fileID: 212000010646992440}
   healthBar: {fileID: 1000012281170202}
 --- !u!114 &114000010858175572
 MonoBehaviour:
