@@ -137,6 +137,7 @@ MonoBehaviour:
   shootRate: 1
   radius: 2
   damage: 5
+  armorPen: 3
   radiusCollider: {fileID: 58133912482858000}
   currentCollisions: []
   spriteRenderer: {fileID: 212508814315282460}

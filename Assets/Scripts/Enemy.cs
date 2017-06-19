@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour, ISelectable{
 
-	public float health, speed, size, nodeDistThreshhold, speedMin, speedMax, jiggleVariance, maxVariance;
+	public float health, speed, size, nodeDistThreshhold, speedMin, speedMax, jiggleVariance, maxVariance, armor;
 	public float maxHealth;
 	public int pathNodeIndex; 
 	private Vector2 nextPointDirection, offset;
@@ -62,11 +62,18 @@ public class Enemy : MonoBehaviour, ISelectable{
 		return (Vector3)(GC.nodes [pathNodeIndex] + t * AB);
 	}
 
-	void receiveDamage(float damage) {
-		Debug.Log ("enemy shot!");
-		health -= damage;
+	void receiveDamage(DamageInfo damageInfo) {
+		float armorRemaining = armor - damageInfo.armorPen;
+		if(armorRemaining < 0) {
+			armorRemaining = 0;
+		}
+		damageInfo.damage -= armorRemaining;
+		if(damageInfo.damage < 1) {
+			damageInfo.damage = 1;
+		}
+		health -= damageInfo.damage;
 		if(health <= 0) {
-			if (this.GetHashCode () == GC.local.Selected.GetHashCode ()) {
+			if (GC.local.Selected != null && this.GetHashCode () == GC.local.Selected.GetHashCode ()) {
 				GC.local.Selected = null;
 			}
 			Destroy (this.gameObject);

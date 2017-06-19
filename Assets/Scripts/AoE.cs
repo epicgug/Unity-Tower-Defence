@@ -4,23 +4,24 @@ using UnityEngine;
 
 public class AoE : Tower {
 
-	public string type {
+	public override string type {
 		get {
 			return "AoE Tower";
 		}
 	}
 
-	public string UIInfo {
-		get {
-			return "Fire Rate: " +  string.Format("{0:0.00}", shootRate) + "\n"
-				+ "Range: " + string.Format("{0:0.00}", radius) + "\n"
-				+ "Damage: "+ damage;
-		}
-	} 
+//	public string UIInfo {
+//		get {
+//			return "Fire Rate: " +  string.Format("{0:0.00}", shootRate) + "\n"
+//				+ "Range: " + string.Format("{0:0.00}", radius) + "\n"
+//				+ "Damage: "+ damage;
+//		}
+//	} 
 
 	void Start () {
 		this.shotTimer = 0f;
 		radiusCollider.radius = radius;
+		damageInfo = new DamageInfo (damage, armorPen);
 	}
 	
 	void Update () {
@@ -29,14 +30,14 @@ public class AoE : Tower {
 		checkShoot ();
 	}
 
-	public override void Select() {
-		spriteRenderer.color = Color.red;
-		//		UI.localUI.testInfoHash.text = this.GetHashCode () + "";
-	}
-
-	public override void Deselect() {
-		spriteRenderer.color = Color.white;
-	}
+//	public override void Select() {
+//		spriteRenderer.color = Color.red;
+//		//		UI.localUI.testInfoHash.text = this.GetHashCode () + "";
+//	}
+//
+//	public override void Deselect() {
+//		spriteRenderer.color = Color.white;
+//	}
 
 	public override void upgradeDamage() {
 		damage += 1;
@@ -57,22 +58,7 @@ public class AoE : Tower {
 		GC.local.gold -= rangeUpgradeCost;
 		radiusCollider.radius = radius;
 	}
-
-	void OnTriggerEnter2D(Collider2D col) {
-		if (col.gameObject.GetComponent<Enemy> () != null) {
-			Debug.Log ("entered" + col.ToString ());
-			currentCollisions.Add (col.gameObject.GetComponent<Enemy> ());
-		}
-	}
-
-	void OnTriggerExit2D (Collider2D col) {
-		currentCollisions.Remove (col.gameObject.GetComponent<Enemy>());
-		if(currentCollisions.Count == 0) {
-			currentCollisions.Clear ();
-		}
-		currentCollisions.TrimExcess ();
-	}
-
+		
 	protected override void checkShoot() {
 		if(this.shotTimer >= this.shootRate) {
 			this.attack ();
@@ -82,8 +68,10 @@ public class AoE : Tower {
 	protected override void attack () {
 		shotTimer = 0;
 		foreach (Enemy enemy in currentCollisions) {
-			if (enemy != null)
-				enemy.SendMessageUpwards ("receiveDamage", damage);
+			if (enemy != null) {
+				enemy.SendMessageUpwards ("receiveDamage", damageInfo);
+
+			}
 		}
 	}
 }

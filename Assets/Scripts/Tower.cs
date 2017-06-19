@@ -6,6 +6,8 @@ public class Tower : MonoBehaviour, ISelectable, IUpgradable {
 	public float shootRate;
 	public float radius;
 	public float damage;
+	public float armorPen;
+	public DamageInfo damageInfo;
 
 
 	public CircleCollider2D radiusCollider;
@@ -23,7 +25,11 @@ public class Tower : MonoBehaviour, ISelectable, IUpgradable {
 	public float rangeUpgradeCost;
 
 	public virtual string UIInfo {
-		get { return ""; }
+		get {
+			return "Fire Rate: " +  string.Format("{0:0.00}", shootRate) + "\n"
+				+ "Range: " + string.Format("{0:0.00}", radius) + "\n"
+				+ "Damage: "+ damage;
+		}
 	} 
 
 	public virtual string type {
@@ -32,8 +38,13 @@ public class Tower : MonoBehaviour, ISelectable, IUpgradable {
 		}
 	}
 
-	public virtual void Select() {}
-	public virtual void Deselect() {}
+	public virtual void Select() {
+		spriteRenderer.color = Color.red;
+	}
+
+	public virtual void Deselect() {
+		spriteRenderer.color = Color.white;
+	}
 
 	public virtual void upgradeDamage() {}
 	public virtual void upgradeShotSpeed() {}
@@ -42,5 +53,20 @@ public class Tower : MonoBehaviour, ISelectable, IUpgradable {
 	protected virtual void checkShoot() {}
 	protected virtual void attack () {}
 
+	public void OnTriggerEnter2D(Collider2D col) {
+		if (col.gameObject.GetComponent<Enemy> () != null) {
+			currentCollisions.Add (col.gameObject.GetComponent<Enemy> ());
+		}
+	}
 
+	public void OnTriggerExit2D (Collider2D col) {
+		currentCollisions.Remove (col.gameObject.GetComponent<Enemy>());
+		if(currentCollisions.Count == 0) {
+			currentCollisions.Clear ();
+		}
+		currentCollisions.TrimExcess ();
+	}
+
+
+		
 }

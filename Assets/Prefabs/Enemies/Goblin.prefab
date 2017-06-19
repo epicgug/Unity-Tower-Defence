@@ -145,6 +145,7 @@ MonoBehaviour:
   speedMax: 3
   jiggleVariance: 0.01
   maxVariance: 0.3
+  armor: 1
   maxHealth: 10
   pathNodeIndex: 0
   t: 0
