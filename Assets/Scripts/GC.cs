@@ -29,7 +29,7 @@ public class GC : MonoBehaviour {
 
 	public Wave[] waves;
 	public static Vector2[] nodes;
-	public GameObject goblin, cannonTower, AoETower;
+	public GameObject goblin, cannonTower, AoETower, mortarTower;
 	public Dictionary<int, IUpgradable> upgradables;
 
 	private int goblinsSpawned;
@@ -126,9 +126,12 @@ public class GC : MonoBehaviour {
 		towerCosts = new Dictionary<string, float> ();
 		towerCosts.Add ("Cannon", 60);
 		towerCosts.Add ("AoE", 80);
+		towerCosts.Add ("Mortar", 100);
 		towerObjects = new Dictionary<string, GameObject> ();
 		towerObjects.Add ("Cannon", cannonTower);
 		towerObjects.Add ("AoE", AoETower);
+		towerObjects.Add ("Mortar", mortarTower);
+
 		GC.local = this;
 		lastSpawnTime = Time.time;
 		goblinLastSpawnTime = Time.time;
@@ -155,20 +158,27 @@ public class GC : MonoBehaviour {
 	}
 
 	void checkForSelection() {
-		if(!UI.localUI.isMouseOver && Input.GetMouseButtonDown(0)) {
+		if(!UI.localUI.isMouseOver
+			&& Input.GetMouseButtonDown(0)) {
 			RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 			foreach (RaycastHit2D hit in hits) {
 				if (hit.collider.gameObject.tag == "Tower") {
 					this.Selected = hit.collider.gameObject.GetComponent<Tower> ();
-//					Debug.Log ("checkforselection tower");
+					UI.localUI.thingToDoNext = UI.ThingsToDoNext.NOTHING;
 					return;
 				} else if (hit.collider.gameObject.tag == "Enemy") {
 					this.Selected = hit.collider.gameObject.GetComponent<Enemy> ();
+					UI.localUI.thingToDoNext = UI.ThingsToDoNext.NOTHING;
 					return;
 				} else {
-					if(this.Selected != null)
+					if (UI.localUI.thingToDoNext == UI.ThingsToDoNext.PLACE_MORTAR_TARGET) {
+						UI.localUI.thingToDoNext = UI.ThingsToDoNext.NOTHING;
+						return;
+					}
+					if(this.Selected != null) {
 						this.Selected = null;
-					
+					}
+					UI.localUI.thingToDoNext = UI.ThingsToDoNext.NOTHING;
 				}
 			}
 		}
@@ -182,10 +192,13 @@ public class GC : MonoBehaviour {
 		gold += amount;
 	}
 
-
 	void createTowers() {
 		if(!UI.localUI.isMouseOver && Input.GetButtonDown("Fire1")) {
-
+			if (UI.localUI.thingToDoNext == UI.ThingsToDoNext.PLACE_MORTAR_TARGET) {
+				Mortar mortar = (Mortar)selected;
+				mortar.ChangeTarget ();
+				return;
+			}
 			// Physics.Raycast(transform.position, , )
 //			Vector3 towerPosition = Input.mousePosition;
 //			towerPosition.z = 0;
@@ -201,17 +214,27 @@ public class GC : MonoBehaviour {
 //			}
 			RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 			foreach(RaycastHit2D hit in hits) {
-				if((hit.collider.gameObject.name == "Land Collision")) {
-					Vector3 mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-					Vector3 smoothPoint = Grid.local.remapPoint (mousePos);
-					if (Grid.local.placeTower (smoothPoint)
-						&& UI.localUI.towerBeingPlaced != "None") {
-						Tower newTower = Instantiate (towerObjects[UI.localUI.towerBeingPlaced], new Vector3 (smoothPoint.x, smoothPoint.y, 0), Quaternion.identity).GetComponent<Tower>();
-						upgradables.Add (newTower.GetHashCode (), newTower);
-						gold -= towerCosts[UI.localUI.towerBeingPlaced];
-						UI.localUI.PlacingTowerButtonDelegate = UI.localUI.noPlacing;
-					}
+				if (hit.collider.gameObject.name != "Land Collision") {
+					continue;
 				}
+				Vector3 mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+				Vector3 smoothPoint = Grid.local.remapPoint (mousePos);
+				if (!Grid.local.placeTower (smoothPoint)) {
+					continue;
+				}
+
+				if (UI.localUI.towerBeingPlaced == "None") {
+					continue;
+				}
+				Tower newTower = Instantiate (towerObjects[UI.localUI.towerBeingPlaced], new Vector3 (smoothPoint.x, smoothPoint.y, 0), Quaternion.identity).GetComponent<Tower>();
+				if(newTower.name.Contains("Mortar")) {
+					Mortar newMortarTower = (Mortar)newTower;
+					UI.localUI.thingToDoNext = UI.ThingsToDoNext.PLACE_MORTAR_TARGET;
+					newTower.transform.SetParent(GC.local.transform);
+				}
+				upgradables.Add (newTower.GetHashCode (), newTower);
+				gold -= towerCosts[UI.localUI.towerBeingPlaced];
+				UI.localUI.PlacingTowerButtonDelegate = UI.localUI.noPlacing;
 			}
 			// if (Physics.Raycast (ray, out hit)) {
 			// 	Debug.Log ("dkfd");

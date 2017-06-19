@@ -13,15 +13,15 @@ public class Cannon : Tower {
 	public int[] damageUpgrades;
 	public int[] damageUpgradesCost;
 
-	public string UIInfo {
-		get {
-			return "Fire Rate: " +  string.Format("{0:0.00}", shootRate) + "\n"
-				+ "Range: " + string.Format("{0:0.00}", radius) + "\n"
-				+ "Damage: "+ damage;
-		}
-	} 
+//	public string UIInfo {
+//		get {
+//			return "Fire Rate: " +  string.Format("{0:0.00}", shootRate) + "\n"
+//				+ "Range: " + string.Format("{0:0.00}", radius) + "\n"
+//				+ "Damage: "+ damage;
+//		}
+//	} 
 
-	public string type {
+	public override string type {
 		get {
 			return "Cannon Tower";
 		}
@@ -37,6 +37,7 @@ public class Cannon : Tower {
 		damageUpgradeCost = 20;
 		rangeUpgradeCost = 20;
 		damage = 5;
+		damageInfo = new DamageInfo (damage, armorPen);
 		// Debug.Log(AssetDatabase.GetAssetPath);
 	}
 
@@ -46,7 +47,7 @@ public class Cannon : Tower {
 
 
 		if(currentCollisions.Count != 0) {
-			if(lookRotation != null)
+//			if(lookRotation != null)
 			if(Time.deltaTime > 0)
 				cannonMuzzle.rotation = Quaternion.Lerp (cannonMuzzle.rotation, lookRotation, Time.deltaTime * turnRate);
 		}
@@ -58,26 +59,30 @@ public class Cannon : Tower {
 		checkShoot ();
 	}
 
-	public override void Select() {
-		spriteRenderer.color = Color.red;
-		//		UI.localUI.testInfoHash.text = this.GetHashCode () + "";
-	}
-
-	public override void Deselect() {
-		spriteRenderer.color = Color.white;
-	}
+//	public override void Select() {
+//		spriteRenderer.color = Color.red;
+//		//		UI.localUI.testInfoHash.text = this.GetHashCode () + "";
+//	}
+//
+//	public override void Deselect() {
+//		spriteRenderer.color = Color.white;
+//	}
 
 	public override void upgradeDamage() {
-		damage += 1;
-		GC.local.gold -= damageUpgradeCost;
+		if (GC.local.gold >= damageUpgradeCost) {
+			GC.local.gold -= damageUpgradeCost;
+			damage += 1;
+		}
 	}
 
 	public override void upgradeShotSpeed() {
 		if(shootRate < shootRateUpgradeChange) {
 			Debug.Log ("fix");
 		} else {
-			shootRate -= shootRateUpgradeChange;
-			GC.local.gold -= shootRateUpgradeCost;
+			if (GC.local.gold >= shootRateUpgradeCost) {
+				shootRate -= shootRateUpgradeChange;
+				GC.local.gold -= shootRateUpgradeCost;
+			}
 		}
 	}
 
@@ -92,20 +97,19 @@ public class Cannon : Tower {
 	//		currentCollisions.Add (col.gameObject.GetComponent<Enemy>());
 	//	}
 	//
-	void OnTriggerEnter2D(Collider2D col) {
-		//Debug.Log ("entered");
-		if(col.gameObject.GetComponent<Enemy>() != null)
-			currentCollisions.Add (col.gameObject.GetComponent<Enemy>());
-	}
-
-	void OnTriggerExit2D (Collider2D col) {
-		currentCollisions.Remove (col.gameObject.GetComponent<Enemy>());
-		if(currentCollisions.Count == 0) {
-			currentCollisions.Clear ();
-		}
-		currentCollisions.TrimExcess ();
-
-	}
+//	void OnTriggerEnter2D(Collider2D col) {
+//		//Debug.Log ("entered");
+//		if(col.gameObject.GetComponent<Enemy>() != null)
+//			currentCollisions.Add (col.gameObject.GetComponent<Enemy>());
+//	}
+//
+//	void OnTriggerExit2D (Collider2D col) {
+//		currentCollisions.Remove (col.gameObject.GetComponent<Enemy>());
+//		if(currentCollisions.Count == 0) {
+//			currentCollisions.Clear ();
+//		}
+//		currentCollisions.TrimExcess ();
+//	}
 
 	protected override void checkShoot() {
 		if(shotTimer >= shootRate && targetEnemy != null) {
@@ -145,8 +149,8 @@ public class Cannon : Tower {
 		shotTimer = 0f;
 		GameObject bullet = (GameObject)Instantiate (cannonProjectile, cannonMuzzle.position, cannonMuzzle.rotation);
 		if (bullet != null) {
-			bullet.SendMessage ("ReceiveEndPoint", targetEnemy);
-			bullet.SendMessage ("setDamage", damage);
+			bullet.SendMessage ("setDamageInfo", damageInfo);
+			bullet.SendMessage ("ReceiveEndPoint", targetEnemy); 
 		}
 	}
 
